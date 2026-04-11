@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameEnding : MonoBehaviour
@@ -10,6 +11,11 @@ public class GameEnding : MonoBehaviour
     public AudioSource exitAudio;
     public CanvasGroup caughtBackgroundImageCanvasGroup;
     public AudioSource caughtAudio;
+
+    public float endDelay = 1f;
+    public MonoBehaviour playerMovement;
+    public ParticleSystem deathParticles;
+    public AudioSource walkingAudio;
 
     bool m_IsPlayerAtExit;
     bool m_IsPlayerCaught;
@@ -41,22 +47,56 @@ public class GameEnding : MonoBehaviour
         }
     }
 
-    void EndLevel (CanvasGroup imageCanvasGroup, bool doRestart, AudioSource audioSource)
+
+    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart, AudioSource audioSource)
     {
+        // stop player movement
+        if (playerMovement.enabled)
+        {
+            playerMovement.enabled = false;
+        }
+
+        // hide player model
+        if (player.activeSelf)
+        {
+            SkinnedMeshRenderer[] smrs = player.GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach (SkinnedMeshRenderer s in smrs)
+            {
+                s.enabled = false;
+            }
+        }
+
+        // show particles
+        if (deathParticles != null)
+        {
+            deathParticles.Play();
+        }
+
+        //stop walking sound effects
+        if (walkingAudio != null)
+        {
+            walkingAudio.Stop();
+        }
+
+        m_Timer += Time.deltaTime;
+        if (m_Timer < endDelay)
+            return;
+
         if (!m_HasAudioPlayed)
         {
             audioSource.Play();
             m_HasAudioPlayed = true;
         }
-            
-        m_Timer += Time.deltaTime;
-        imageCanvasGroup.alpha = m_Timer / fadeDuration;
 
-        if (m_Timer > fadeDuration + displayImageDuration)
+        float fadeTimer = m_Timer - endDelay;
+        imageCanvasGroup.alpha = fadeTimer / fadeDuration;
+
+        if (fadeTimer > fadeDuration + displayImageDuration)
         {
             if (doRestart)
             {
                 SceneManager.LoadScene (0);
+                // turn on mesh render
             }
             else
             {
