@@ -12,5 +12,5 @@ Team members: Isabelle Below and Katie Linnenkamp
 ## 3. Particles- Isabelle
   When caught by a gargoyle or ghost, or reaching the end of the level, the player disappears and a particle effect plays. This was accomplished by altering the GameEnding script. First, the player's movement is disabled, then the SkinnedMeshRenderer is disabled to make the player disappear, then the death particles play, and the walking sound effect stops. All of these things were accomplished by creating new public variables and linking the appropriate assets to them. To prevent the ending screen from playing immediately, I also had to add a timer. This makes the end screen play after 1 second.
 
-## 4. Sound Effects
-
+## 4. Sound Effects- Katie
+  We wanted the sound element to be distinct from the other sounds in the game. So we created 5 collectable elements within the map that can be picked up by John when touched. They are spread around the map and must be searched for. I first found a model that fit our needs and made it a prefab so we could duplicate them. The code we used in assignment 1 was repurposed for these collectables with slight alterations and a sound element was added upon collision with the player. There are 5 total, so try to find them all if you want, but there are a few in plain sight as well.
